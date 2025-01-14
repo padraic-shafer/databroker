@@ -1,4 +1,5 @@
-FROM ghcr.io/bluesky/tiled:v0.1.0b10 as base
+# FROM ghcr.io/bluesky/tiled:v0.1.0b10 as base
+FROM tiled:local as base
 
 FROM base as builder
 
@@ -8,8 +9,10 @@ FROM base as builder
 RUN apt-get -y update && apt-get install -y git
 
 WORKDIR /code
-COPY . .
-RUN pip install .[back-compat,server]
+COPY ./databroker .
+COPY ./suitcase-mongo ./suitcase-mongo
+RUN pip install -e ./suitcase-mongo
+RUN pip install -e .[back-compat,server]
 
 FROM base as runner
 
